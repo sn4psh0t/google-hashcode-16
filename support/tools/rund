@@ -1,0 +1,19 @@
+#!/usr/bin/env sh
+
+cd "$(dirname "$0")"
+. "./.common.sh"
+cd ../..
+
+tester="./support/tools/run"
+
+test_handler()
+{
+        "$tester" || true
+
+        while read -d '' e; do
+                ## test -f skips a file descriptor written by vim.
+                test -f "$e" && clear && "$tester" || true
+        done
+}
+
+watch "source/" | dsstore_filter | test_handler
